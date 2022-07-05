@@ -1,0 +1,30 @@
+{
+  "name": "taquito-demo",
+  "version": "1.0.0",
+  "description": "A demo app for Taquito framework",
+  "scripts": {
+    "examples": "npx ts-node src/examples.ts",
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shendor/taquito-demo.git"
+  },
+  "keywords": [
+    "tezos",
+    "taquito",
+    "ts",
+    "typescript"
+  ],
+  "devDependencies": {
+    "@types/jquery": "^3.5.5",
+    "jquery": "^3.5.1",
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@taquito/signer": "^13.0.0",
+    "@taquito/taquito": "^13.0.0"
+  }
+}
