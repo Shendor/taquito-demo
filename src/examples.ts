@@ -1,5 +1,7 @@
 import {MichelsonMap, TezosToolkit} from "@taquito/taquito";
 import {importKey} from "@taquito/signer";
+// import { incrementContract } from '../resources/increment_contract';
+import {readFileSync} from 'fs';
 
 const TEZOS_URL = "https://rpc.ghostnet.teztnets.xyz"
 const FAUCET_KEY = {
@@ -40,7 +42,8 @@ const main = async (): Promise<any> => {
     // await getBalance(tk, "tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY");
     // await transfer(tk, "tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY");
     // await getBalance(tk, "tz1h3rQ8wBxFd8L9B3d7Jhaawu6Z568XU3xY");
-    await increment(tk, "KT1A3dyvS4pWd9b9yLLMBKLxc6S6G5b58BsK", 3);
+    // await increment(tk, "KT1A3dyvS4pWd9b9yLLMBKLxc6S6G5b58BsK", 3);
+    // await deploy(tk);
 }
 
 async function getBalance(tk: TezosToolkit, address: string) {
@@ -72,7 +75,30 @@ async function increment(tk: TezosToolkit, address: string, value: number) {
     console.log(`Operation injected: https://ghost.tzstats.com/${result.hash}`);
 
     let storage = await contract.storage();
-    console.log(`Smart contract function called: ${storage}`);
+    console.log(`Smart contract function storage: ${storage}`);
+}
+
+async function deploy(tk: TezosToolkit) {
+    try {
+        const incrementContract = readFileSync('./resources/increment_contract.tz', 'utf-8');
+        console.log('Deploying Ligo smart contract: ', incrementContract);
+        const op = await tk.contract.originate({
+            balance: '1000',
+            code: incrementContract,
+            init: {int: '0'},
+            fee: 30000,
+            storageLimit: 50000,
+            gasLimit: 90000,
+        });
+
+        console.log('Awaiting confirmation...');
+        const contract = await op.contract();
+        console.log('Contract address', contract.address)
+        console.log('Storage', await contract.storage());
+        console.log('Operation hash:', op.hash, 'Included in block level:', op.includedInBlock);
+    } catch (ex) {
+        console.error(ex);
+    }
 }
 
 main()
